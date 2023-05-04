@@ -1,6 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
+import 'vuetify/dist/vuetify.min.css' 
+
+
 const routes = [
   {
     path: '/',
@@ -14,6 +17,11 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+  },
+  {
+    path: '/calculadora',
+    name: 'calculadora',
+    component: () => import(/* webpackChunkName: "calculadora" */ '../views/CalculadoraView.vue')
   }
 ]
 
