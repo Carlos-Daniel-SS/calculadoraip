@@ -12,7 +12,11 @@ export default {
   name: 'App',
 
   data: () => ({
-    //
+    methods: {
+      validar_endereço(){
+        return true;
+      }
+    }
   }),
 }
 </script>
