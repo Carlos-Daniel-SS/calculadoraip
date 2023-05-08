@@ -80,7 +80,14 @@
     <v-row>
       <v-col> </v-col>
       <v-col align="center" jutify="center">
-        <v-btn class="bg-green" width="100%" @click="retorna_binario()"
+        <v-btn
+          class="bg-green"
+          width="100%"
+          @click="
+            retorna_binario();
+            verificar_classe();
+            encontrarEnderecoDeBroadcast()
+          "
           >Calcular</v-btn
         >
       </v-col>
@@ -97,6 +104,7 @@ export default {
     return {
       endereco_ip: "",
       mascara: "",
+      endereco_ip_host: ""
     };
   },
   methods: {
@@ -118,6 +126,7 @@ export default {
         }
 
         console.log(binario.join("."));
+        return binario.join(".");
       }
       return null;
     },
@@ -127,8 +136,11 @@ export default {
       return regex.test(enderecoIP);
     },
     verificar_classe() {
-      if (this.enderecoIpEhValido(this.endereco_ip) && this.enderecoIpEhValido(this.mascara)) {
-        let endereço_em_binário = tratar_endereço(this.endereco_ip);
+      if (
+        this.enderecoIpEhValido(this.endereco_ip) &&
+        this.enderecoIpEhValido(this.mascara)
+      ) {
+        let endereço_em_binário = this.retorna_binario(this.endereco_ip);
         let dividir_octetos = endereço_em_binário.split(".");
 
         let primeiro_bit = dividir_octetos[0].slice(0, 1);
@@ -137,18 +149,20 @@ export default {
 
         let classe;
         if (primeiro_bit === "0") {
-          classe = `Pertence a classe A ${primeiro_bittexto}`;
+          classe = `A`;
         } else if (segundo_bit === "10") {
-          classe = `Pertence a classe B${segundo_bit}`;
+          classe = `B`;
         } else if (terceiro_bit === "110") {
-          classe = `Pertence a classe C ${terceiro_bit}`;
+          classe = `C`;
         } else {
           classe = `Classe não identificada`;
         }
-        console.log(classe);
+        console.log(`O endereço ${this.endereco_ip} pertence a classe ${classe}`);
       }
       return null;
     },
+    
+    
   },
 };
 </script>
