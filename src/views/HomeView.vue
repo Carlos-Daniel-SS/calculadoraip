@@ -161,7 +161,31 @@ export default {
       }
       return null;
     },
-    
+    encontrarEnderecoDeBroadcast() {
+      // Divide o endereço IP e a máscara de sub-rede em octetos
+      if (this.enderecoIpEhValido(this.endereco_ip) && this.enderecoIpEhValido(this.mascara)) {
+        let enderecoOctetos = this.endereco_ip.split(".");
+        let mascaraOctetos = this.mascara.split(".");
+
+        // Converte os octetos de string para números inteiros
+        for (let i = 0; i < 4; i++) {
+          enderecoOctetos[i] = parseInt(enderecoOctetos[i]);
+          mascaraOctetos[i] = parseInt(mascaraOctetos[i]);
+        }
+
+        // Calcula o endereço de broadcast
+        let broadcastOctetos = [];
+        for (let i = 0; i < 4; i++) {
+          broadcastOctetos.push(enderecoOctetos[i] | (255 - mascaraOctetos[i]));
+        }
+        let broadcast = broadcastOctetos.join(".");
+
+        // Retorna o endereço de broadcast calculado
+        console.log(`O broadcast da rede é ${broadcast}`);
+        return broadcast;
+      }
+      return null;
+    },
     
   },
 };
