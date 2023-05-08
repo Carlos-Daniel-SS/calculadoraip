@@ -3,7 +3,7 @@
     <v-row>
       <v-col> </v-col>
       <v-col>
-        <h1 class="text-center">{{ endereco_ip }}</h1>
+        <h1 class="text-center">Calculadora IPv4</h1>
       </v-col>
       <v-col></v-col>
     </v-row>
@@ -13,7 +13,6 @@
       <v-col>
         <form>
           <v-text-field
-            v-model="endereco_ip"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0"
             label="Digite o endereço de rede:"
@@ -24,6 +23,7 @@
       <v-col>
         <form>
           <v-text-field
+            v-model="endereco_ip"
             class="pe-2"
             placeholder="Ex.: 133.8.0.1"
             label="Digite o endereço de host:"
@@ -86,10 +86,19 @@
           @click="
             retorna_binario();
             verificar_classe();
-            encontrarEnderecoDeBroadcast()
+            encontrarEnderecoDeBroadcast();
+            endereco_rede()
           "
           >Calcular</v-btn
         >
+      </v-col>
+      <v-col></v-col>
+    </v-row>
+    <v-row >
+      <v-col> </v-col>
+      <v-col>
+        <h2 class="text-center">Calculadora IPv4</h2>
+        <p class="d-flex justify-center" >Para utilizar a calculadora, preencha dois ou mais campos e escolha a opção CALCULAR para o preenchimento dos campos vazios.</p>
       </v-col>
       <v-col></v-col>
     </v-row>
@@ -186,6 +195,33 @@ export default {
       }
       return null;
     },
+    endereco_rede(){
+
+    if (this.enderecoIpEhValido(this.endereco_ip) && this.enderecoIpEhValido(this.mascara)){
+
+        let enderecoOctetos = this.endereco_ip.split('.');
+        let mascaraOctetos = this.mascara.split('.');
+
+        for (let i = 0; i < 4; i++) {
+
+            enderecoOctetos[i] = parseInt(enderecoOctetos[i]);
+            mascaraOctetos[i] = parseInt(mascaraOctetos[i]);
+
+        }
+        
+        let redeOctetos = [];
+
+        for (let i = 0; i < 4; i++) {
+
+        redeOctetos.push(enderecoOctetos[i] & (mascaraOctetos[i]));
+        }
+
+        let endereço_real = redeOctetos.join('.');
+        console.log(`O endereço de rede do host ${this.endereco_ip} é ${endereço_real}`)
+        //return endereço_real;
+    }
+    return null;
+}
     
   },
 };
