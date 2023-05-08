@@ -126,6 +126,29 @@ export default {
         /^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
       return regex.test(enderecoIP);
     },
+    verificar_classe() {
+      if (this.enderecoIpEhValido(this.endereco_ip) && this.enderecoIpEhValido(this.mascara)) {
+        let endereço_em_binário = tratar_endereço(this.endereco_ip);
+        let dividir_octetos = endereço_em_binário.split(".");
+
+        let primeiro_bit = dividir_octetos[0].slice(0, 1);
+        let segundo_bit = dividir_octetos[0].slice(0, 2);
+        let terceiro_bit = dividir_octetos[0].slice(0, 3);
+
+        let classe;
+        if (primeiro_bit === "0") {
+          classe = `Pertence a classe A ${primeiro_bittexto}`;
+        } else if (segundo_bit === "10") {
+          classe = `Pertence a classe B${segundo_bit}`;
+        } else if (terceiro_bit === "110") {
+          classe = `Pertence a classe C ${terceiro_bit}`;
+        } else {
+          classe = `Classe não identificada`;
+        }
+        console.log(classe);
+      }
+      return null;
+    },
   },
 };
 </script>
