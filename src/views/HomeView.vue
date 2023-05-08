@@ -80,7 +80,7 @@
     <v-row>
       <v-col> </v-col>
       <v-col align="center" jutify="center">
-        <v-btn class="bg-green" width="100%"
+        <v-btn class="bg-green" width="100%" @click="retorna_binario()"
           >Calcular</v-btn
         >
       </v-col>
@@ -99,6 +99,28 @@ export default {
       mascara: "",
     };
   },
-  
+  methods: {
+    retorna_binario() {
+      console.log(this.endereco_ip);
+
+      if (
+        this.enderecoIpEhValido(this.endereco_ip) &&
+        this.enderecoIpEhValido(this.mascara)
+      ) {
+        let partes_ip = this.endereco_ip.split(".");
+        let binario = [];
+
+        for (let i = 0; i < partes_ip.length; i++) {
+          let endereço_decimal = parseInt(partes_ip[i]);
+          let endereço_binario = endereço_decimal.toString(2).padStart(8, "0");
+
+          binario.push(endereço_binario);
+        }
+
+        console.log(binario.join("."));
+      }
+      return null;
+    },
+  },
 };
 </script>
