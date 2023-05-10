@@ -84,21 +84,26 @@
           class="bg-green"
           width="100%"
           @click="
-            retorna_binario();
             verificar_classe();
             encontrarEnderecoDeBroadcast();
-            endereco_rede()
+            endereco_rede();
+            retorna_modeloCIDR();
+            retornaIP_em_binario();
+            retorna_mascaraBin();
           "
           >Calcular</v-btn
         >
       </v-col>
       <v-col></v-col>
     </v-row>
-    <v-row >
+    <v-row>
       <v-col> </v-col>
       <v-col>
         <h2 class="text-center">Calculadora IPv4</h2>
-        <p class="d-flex justify-center" >Para utilizar a calculadora, preencha dois ou mais campos e escolha a opção CALCULAR para o preenchimento dos campos vazios.</p>
+        <p class="d-flex justify-center">
+          Para utilizar a calculadora, preencha dois ou mais campos e escolha a
+          opção CALCULAR para o preenchimento dos campos vazios.
+        </p>
       </v-col>
       <v-col></v-col>
     </v-row>
@@ -113,18 +118,14 @@ export default {
     return {
       endereco_ip: "",
       mascara: "",
-      endereco_ip_host: ""
+      endereco_ip_host: "",
     };
   },
   methods: {
-    retorna_binario() {
-      console.log(this.endereco_ip);
-
-      if (
-        this.enderecoIpEhValido(this.endereco_ip) &&
-        this.enderecoIpEhValido(this.mascara)
-      ) {
-        let partes_ip = this.endereco_ip.split(".");
+    retorna_binario(decimal) {
+      if (this.enderecoIpEhValido(this.endereco_ip) && this.enderecoIpEhValido(this.mascara)){
+        
+        let partes_ip = decimal.split(".");
         let binario = [];
 
         for (let i = 0; i < partes_ip.length; i++) {
@@ -133,11 +134,10 @@ export default {
 
           binario.push(endereço_binario);
         }
+        let enderecoBIn = binario.join(".");
 
-        console.log(binario.join("."));
-        return binario.join(".");
+        return enderecoBIn;
       }
-      return null;
     },
     enderecoIpEhValido(enderecoIP) {
       let regex =
@@ -166,13 +166,30 @@ export default {
         } else {
           classe = `Classe não identificada`;
         }
-        console.log(`O endereço ${this.endereco_ip} pertence a classe ${classe}`);
+        console.log(
+          `O endereço ${this.endereco_ip} pertence a classe ${classe}`
+        );
       }
       return null;
     },
+    retornaIP_em_binario() {
+      
+      let endereco_ipbinario = this.retorna_binario(this.endereco_ip);
+      console.log(`Endereço IP em enderbinário: ${endereco_ipbinario}`);
+      return endereco_ipbinario;
+    },
+    retorna_mascaraBin() {
+      //let mascara_em_binario = ;
+
+      console.log(this.retorna_binario(this.mascara));
+      //return mascara_em_binario;
+    },
     encontrarEnderecoDeBroadcast() {
       // Divide o endereço IP e a máscara de sub-rede em octetos
-      if (this.enderecoIpEhValido(this.endereco_ip) && this.enderecoIpEhValido(this.mascara)) {
+      if (
+        this.enderecoIpEhValido(this.endereco_ip) &&
+        this.enderecoIpEhValido(this.mascara)
+      ) {
         let enderecoOctetos = this.endereco_ip.split(".");
         let mascaraOctetos = this.mascara.split(".");
 
@@ -195,34 +212,54 @@ export default {
       }
       return null;
     },
-    endereco_rede(){
-
-    if (this.enderecoIpEhValido(this.endereco_ip) && this.enderecoIpEhValido(this.mascara)){
-
-        let enderecoOctetos = this.endereco_ip.split('.');
-        let mascaraOctetos = this.mascara.split('.');
+    endereco_rede() {
+      if (
+        this.enderecoIpEhValido(this.endereco_ip) &&
+        this.enderecoIpEhValido(this.mascara)
+      ) {
+        let enderecoOctetos = this.endereco_ip.split(".");
+        let mascaraOctetos = this.mascara.split(".");
 
         for (let i = 0; i < 4; i++) {
-
-            enderecoOctetos[i] = parseInt(enderecoOctetos[i]);
-            mascaraOctetos[i] = parseInt(mascaraOctetos[i]);
-
+          enderecoOctetos[i] = parseInt(enderecoOctetos[i]);
+          mascaraOctetos[i] = parseInt(mascaraOctetos[i]);
         }
-        
+
         let redeOctetos = [];
 
         for (let i = 0; i < 4; i++) {
-
-        redeOctetos.push(enderecoOctetos[i] & (mascaraOctetos[i]));
+          redeOctetos.push(enderecoOctetos[i] & mascaraOctetos[i]);
         }
 
-        let endereço_real = redeOctetos.join('.');
-        console.log(`O endereço de rede do host ${this.endereco_ip} é ${endereço_real}`)
-        //return endereço_real;
-    }
-    return null;
-}
-    
+        let endereço_real = redeOctetos.join(".");
+        console.log(
+          `O endereço de rede do host ${this.endereco_ip} é ${endereço_real}`
+        );
+        return endereço_real;
+      }
+      return null;
+    },
+    retorna_modeloCIDR() {
+      console.log(this.mascara);
+      if (
+        this.enderecoIpEhValido(this.endereco_ip) &&
+        this.enderecoIpEhValido(this.mascara)
+      ) {
+        let endereco_redeReal = this.endereco_rede(
+          this.endereco_ip,
+          this.mascara
+        );
+        let mascara_em_binario = this.retorna_binario(this.mascara).split(".");
+
+        const qtd_bit = mascara_em_binario.reduce((bit, octeto) => {
+          return bit + octeto.split("1").length - 1;
+        }, 0);
+
+        console.log(qtd_bit);
+
+        console.log(`O modelo CIDR é: ${endereco_redeReal + "/" + qtd_bit}`);
+      }
+    },
   },
 };
 </script>
