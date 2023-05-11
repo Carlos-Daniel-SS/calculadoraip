@@ -13,6 +13,7 @@
       <v-col>
         <form>
           <v-text-field
+            v-model="endereco_ip_rede"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0"
             label="Digite o endereço de rede:"
@@ -48,6 +49,7 @@
       <v-col>
         <form>
           <v-text-field
+            v-model="modelo_CIDR"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0/24"
             label="Representação CIDR:"
@@ -58,6 +60,7 @@
       <v-col>
         <form>
           <v-text-field
+            v-model="endereco_broadcast"
             class="pe-2"
             placeholder="Ex.: 133.8.0.255"
             label="Digite o endereço de broadcast:"
@@ -97,7 +100,6 @@
       <v-col></v-col>
     </v-row>
     <v-row>
-      <v-col> </v-col>
       <v-col>
         <h2 class="text-center">Calculadora IPv4</h2>
         <p class="d-flex justify-center">
@@ -105,7 +107,6 @@
           opção CALCULAR para o preenchimento dos campos vazios.
         </p>
       </v-col>
-      <v-col></v-col>
     </v-row>
   </v-container>
 </template>
@@ -118,7 +119,9 @@ export default {
     return {
       endereco_ip: "",
       mascara: "",
-      endereco_ip_host: "",
+      endereco_ip_rede: "",
+      endereco_broadcast: "",
+      modelo_CIDR: "",
     };
   },
   methods: {
@@ -208,6 +211,7 @@ export default {
 
         // Retorna o endereço de broadcast calculado
         console.log(`O broadcast da rede é ${broadcast}`);
+        this.endereco_broadcast = broadcast;
         return broadcast;
       }
       return null;
@@ -235,6 +239,8 @@ export default {
         console.log(
           `O endereço de rede do host ${this.endereco_ip} é ${endereço_real}`
         );
+
+        this.endereco_ip_rede = endereço_real;
         return endereço_real;
       }
       return null;
@@ -255,9 +261,12 @@ export default {
           return bit + octeto.split("1").length - 1;
         }, 0);
 
-        console.log(qtd_bit);
+        let CIDR = endereco_redeReal + "/" + qtd_bit;
+        this.modelo_CIDR = CIDR;
 
-        console.log(`O modelo CIDR é: ${endereco_redeReal + "/" + qtd_bit}`);
+        console.log(`CIDR:${CIDR}`);
+
+        return CIDR;
       }
     },
   },
