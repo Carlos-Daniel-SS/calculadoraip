@@ -270,6 +270,14 @@ export default {
       this.endereco_ip = endereçoip;
       return endereçoip;
     },
+    retornaMascaraDoCIDR() {
+      let [endereçoip, mascara] = this.modelo_CIDR.split("/");
+      let mascara_em_binario = this.somarbits(mascara);
+
+      let mascarf = this.retorna_decimal(mascara_em_binario);
+      this.mascara = mascarf;
+      return mascarf;
+    },
   },
 };
 </script>
