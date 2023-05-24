@@ -68,16 +68,6 @@
           </v-text-field>
         </form>
       </v-col>
-      <v-col>
-        <form>
-          <v-text-field
-            class="pe-2"
-            placeholder="Ex.: 16"
-            label="N° de sub-redes a serem ciradas:"
-          >
-          </v-text-field>
-        </form>
-      </v-col>
     </v-row>
 
     <v-row>
@@ -93,6 +83,8 @@
             retorna_modeloCIDR();
             retornaIP_em_binario();
             retorna_mascaraBin();
+            retornaEnderecoIPDoCIDR();
+            retornaMascaraDoCIDR()
           "
           >Calcular</v-btn
         >
@@ -118,6 +110,7 @@ export default {
   data() {
     return {
       endereco_ip: "",
+      endereco_ip_test: "",
       mascara: "",
       endereco_ip_rede: "",
       endereco_broadcast: "",
@@ -126,8 +119,10 @@ export default {
   },
   methods: {
     retorna_binario(decimal) {
-      if (this.enderecoIpEhValido(this.endereco_ip) && this.enderecoIpEhValido(this.mascara)){
-        
+      if (
+        this.enderecoIpEhValido(this.endereco_ip) &&
+        this.enderecoIpEhValido(this.mascara)
+      ) {
         let partes_ip = decimal.split(".");
         let binario = [];
 
@@ -176,7 +171,6 @@ export default {
       return null;
     },
     retornaIP_em_binario() {
-      
       let endereco_ipbinario = this.retorna_binario(this.endereco_ip);
       console.log(`Endereço IP em enderbinário: ${endereco_ipbinario}`);
       return endereco_ipbinario;
@@ -268,6 +262,13 @@ export default {
 
         return CIDR;
       }
+    },
+    retornaEnderecoIPDoCIDR() {
+      let [endereçoip, mascara] = this.modelo_CIDR.split("/");
+      //let redeReal = retorna
+      //console.log(`Endereço de Rede:${endereçoip}`);
+      this.endereco_ip = endereçoip;
+      return endereçoip;
     },
   },
 };
