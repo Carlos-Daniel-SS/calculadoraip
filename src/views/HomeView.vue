@@ -110,7 +110,6 @@ export default {
   data() {
     return {
       endereco_ip: "",
-      endereco_ip_test: "",
       mascara: "",
       endereco_ip_rede: "",
       endereco_broadcast: "",
@@ -239,6 +238,35 @@ export default {
       }
       return null;
     },
+    endereco_redeReal(endereco_ip, mascara) {
+      if (
+        this.enderecoIpEhValido(endereco_ip) &&
+        this.enderecoIpEhValido(mascara)
+      ) {
+        let enderecoOctetos = endereco_ip.split(".");
+        let mascaraOctetos = mascara.split(".");
+
+        for (let i = 0; i < 4; i++) {
+          enderecoOctetos[i] = parseInt(enderecoOctetos[i]);
+          mascaraOctetos[i] = parseInt(mascaraOctetos[i]);
+        }
+
+        let redeOctetos = [];
+
+        for (let i = 0; i < 4; i++) {
+          redeOctetos.push(enderecoOctetos[i] & mascaraOctetos[i]);
+        }
+
+        let endereço_real = redeOctetos.join(".");
+        console.log(
+          `O endereço de rede do host ${endereco_ip} é ${endereço_real}`
+        );
+
+        //this.endereco_ip_rede = endereço_real;
+        return endereço_real;
+      }
+      return null;
+    },
     retorna_modeloCIDR() {
       console.log(this.mascara);
       if (
@@ -267,6 +295,11 @@ export default {
       let [endereçoip, mascara] = this.modelo_CIDR.split("/");
       //let redeReal = retorna
       //console.log(`Endereço de Rede:${endereçoip}`);
+      
+      let mascaraFinal = this.somarbits(mascara);
+      let mascaraFinalFinal = this.retorna_decimal(mascaraFinal);
+      let EnderecoReal = this.endereco_redeReal(endereçoip,mascaraFinalFinal)
+      this.endereco_ip_rede = EnderecoReal;
       this.endereco_ip = endereçoip;
       return endereçoip;
     },
