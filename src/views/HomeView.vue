@@ -278,6 +278,16 @@ export default {
       this.mascara = mascarf;
       return mascarf;
     },
+    retorna_decimal(endereco) {
+      let endereço = endereco;
+      let binario = endereço.split(".");
+      let decimal = [];
+      for (let i = 0; i < binario.length; i++) {
+        decimal.push(parseInt(binario[i], 2));
+      }
+      //console.log(`Endereço ${endereco} em decimal: ${decimal.join(".")}`);
+      return decimal.join(".");
+    },
   },
 };
 </script>
