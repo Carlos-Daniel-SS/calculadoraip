@@ -288,6 +288,14 @@ export default {
       //console.log(`Endereço ${endereco} em decimal: ${decimal.join(".")}`);
       return decimal.join(".");
     },
+    somarbits(prefixo_rede) {
+      let prefixo = prefixo_rede;
+      let mascaraBinaria = "1".repeat(prefixo) + "0".repeat(32 - prefixo);
+      let octetos = mascaraBinaria.match(/.{1,8}/g).join(".");
+      console.log(octetos);
+
+      return octetos;
+    },
   },
 };
 </script>
