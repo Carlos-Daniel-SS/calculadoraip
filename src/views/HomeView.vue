@@ -74,12 +74,7 @@
     <v-row>
       <v-col> </v-col>
       <v-col align="center" jutify="center">
-        <v-btn
-          class="bg-green"
-          width="100%"
-          @click="
-            CalculaTodos();
-          "
+        <v-btn class="bg-green" width="100%" @click="CalculaTodos()"
           >Calcular</v-btn
         >
       </v-col>
@@ -111,7 +106,6 @@ export default {
   },
   methods: {
     CalculaTodos() {
-      
       let rede = this.endereco_ip_rede;
       let host = this.endereco_ip;
       let mask = this.mascara;
@@ -119,10 +113,11 @@ export default {
       let enderecoBroadcast = this.endereco_broadcast;
 
       if (this.enderecoIpEhValido(rede)) {
-        if (this.validaMascara(mask)) {
+        if (this.validaMascara(mask) && this.validaRedeMascara(rede, mask)) {
           rede = this.calculaRede(rede, mask);
           enderecoBroadcast = this.calculaBroadcast(rede, mask);
           CIDR = this.calculaCIDR(rede, mask);
+
           this.endereco_ip_rede = rede;
           this.endereco_ip = host;
           this.mascara = mask;
@@ -132,7 +127,10 @@ export default {
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
           );
-        } else if (this.validaCIDR(CIDR) && rede == this.calculaEnderecoComCIDR(CIDR)) {
+        } else if (
+          this.validaCIDR(CIDR) &&
+          rede == this.calculaEnderecoComCIDR(CIDR)
+        ) {
           rede = this.calculaEnderecoComCIDR(CIDR);
           mask = this.calculaMascaraComCIDR(CIDR);
           enderecoBroadcast = this.calculaBroadcastComCIDR(CIDR);
@@ -160,7 +158,7 @@ export default {
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
           );
         } else {
-          console.log("Endereços não compatíveis");
+          console.log("Endereço inválido");
         }
       } else if (this.enderecoIpEhValido(host)) {
         if (this.validaMascara(mask)) {
@@ -264,22 +262,29 @@ export default {
       return true;
     },
     validaBroadcast(rede, broadcast) {
-      let enderecoOctetos = rede.split(".").map(Number);
-      let broadcastOctetos = broadcast.split(".").map(Number);
-      for (let i = 0; i < enderecoOctetos.length; i++) {
-        if (
-          enderecoOctetos[i] != broadcastOctetos[i]
-        ) {
-          let numeroChave = broadcastOctetos[i] + 1;
-          let loga = Math.log2(numeroChave);
-          //console.log(`numero: ${numeroChave}, ${loga}`);
+      if (this.enderecoIpEhValido(broadcast)) {
+        let enderecoOctetos = rede.split(".").map(Number);
+        let broadcastOctetos = broadcast.split(".").map(Number);
+        for (let i = 0; i < enderecoOctetos.length; i++) {
+          if (enderecoOctetos[i] != broadcastOctetos[i]) {
+            let numeroChave = broadcastOctetos[i] + 1;
+            let loga = Math.log2(numeroChave);
+            //console.log(`numero: ${numeroChave}, ${loga}`);
 
-          if (Number.isInteger(loga)) {
-            return true;
+            if (Number.isInteger(loga)) {
+              return true;
+            }
+            return false;
           }
-          return false;
         }
       }
+    },
+    validaRedeMascara(rede, mascara) {
+      let redeCompara = this.calculaRede(rede, mascara);
+      if (redeCompara != rede) {
+        return false;
+      }
+      return true;
     },
     calculaRede(enderecoIP, mascara) {
       if (this.enderecoIpEhValido(enderecoIP) && this.validaMascara(mascara)) {
