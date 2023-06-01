@@ -74,12 +74,22 @@
     <v-row>
       <v-col> </v-col>
       <v-col align="center" jutify="center">
-        <v-btn class="bg-green" width="100%" @click="CalculaTodos()"
-          >Calcular</v-btn
+        <v-btn class="bg-red" width="100%" @click="Limpar()"
+          >REINICIAR</v-btn
         >
       </v-col>
       <v-col></v-col>
+     
+      <v-col> </v-col>
+      <v-col align="center" jutify="center">
+        <v-btn class="bg-green" width="100%" @click="CalculaTodos()"
+          >CALCULAR</v-btn
+        >
+      </v-col>
+      <v-col></v-col>
+    
     </v-row>
+    
     <v-row>
       <v-col>
         <p class="d-flex justify-center">
@@ -215,6 +225,13 @@ export default {
         }
       }
       console.log(`Ainda não!`);
+    },
+    Limpar(){
+      this.endereco_ip_rede = "";
+      this.endereco_ip = "";
+      this.mascara = "";
+      this.modelo_CIDR = "";
+      this.endereco_broadcast = "";
     },
     enderecoIpEhValido(enderecoIP) {
       let regex =
