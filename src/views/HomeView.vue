@@ -14,6 +14,7 @@
         <form>
           <v-text-field
             v-model="endereco_ip_rede"
+            :rules="enderecoIPRules"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0"
             label="Digite o endereço de rede:"
@@ -25,6 +26,7 @@
         <form>
           <v-text-field
             v-model="endereco_ip"
+            :rules="enderecoIPRules"
             :disabled="endereco_ip_rede.length != 0"
             class="pe-2"
             placeholder="Ex.: 133.8.0.1"
@@ -37,6 +39,7 @@
         <form>
           <v-text-field
             v-model="mascara"
+            :rules="enderecoIPRules"
             class="pe-2"
             placeholder="Ex.: 255.255.255.0"
             label="Máscara:"
@@ -62,6 +65,8 @@
         <form>
           <v-text-field
             v-model="endereco_broadcast"
+            :rules="enderecoIPRules"
+            :disabled="endereco_ip.length != 0"
             class="pe-2"
             placeholder="Ex.: 133.8.0.255"
             label="Digite o endereço de broadcast:"
@@ -71,15 +76,13 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row class="d-flex justify-center">
       <v-col> </v-col>
       <v-col align="center" jutify="center">
-        <v-btn class="bg-red" width="100%" @click="Limpar()"
-          >REINICIAR</v-btn
-        >
+        <v-btn class="bg-red" width="100%" @click="Limpar()">REINICIAR</v-btn>
       </v-col>
       <v-col></v-col>
-     
+
       <v-col> </v-col>
       <v-col align="center" jutify="center">
         <v-btn class="bg-green" width="100%" @click="CalculaTodos()"
@@ -87,15 +90,34 @@
         >
       </v-col>
       <v-col></v-col>
-    
     </v-row>
-    
+
     <v-row>
       <v-col>
         <p class="d-flex justify-center">
           Para utilizar a calculadora, preencha dois ou mais campos e escolha a
           opção CALCULAR para o preenchimento dos campos vazios.
         </p>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-table v-if="mostrarTabela" height="300px">
+          <thead>
+            <tr>
+              <th class="text-left">Endereços</th>
+              <th class="text-left">Decimal</th>
+              <th class="text-left">Binário</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in desserts" :key="item.name">
+              <td>{{ item.name }}</td>
+              <td>{{ item.decimal }}</td>
+              <td>{{ item.binario }}</td>
+            </tr>
+          </tbody>
+        </v-table>
       </v-col>
     </v-row>
   </v-container>
@@ -107,11 +129,45 @@ export default {
 
   data() {
     return {
+      mostrarTabela: false,
       endereco_ip_rede: "",
       endereco_ip: "",
       mascara: "",
       modelo_CIDR: "",
       endereco_broadcast: "",
+      desserts: [
+        {
+          name: "Endereço de Rede",
+          decimal: "",
+          binario: "",
+        },
+        {
+          name: "Endereço de Host",
+          decimal: "",
+          binario: "",
+        },
+        {
+          name: "Máscara",
+          decimal: "",
+          binario: "",
+        },
+        {
+          name: "Endereço de Broadcast",
+          decimal: "",
+          binario: "",
+        },
+        {
+          name: "Classe",
+          decimal: "",
+          binario: "",
+        },
+      ],
+      enderecoIPRules: [
+        (value) =>
+          /^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(
+            value
+          ) || "Endereço inválido",
+      ],
     };
   },
   methods: {
@@ -133,6 +189,34 @@ export default {
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
+          this.desserts = [
+            {
+              name: "Endereço de Rede",
+              decimal: rede,
+              binario: this.calculaBinario(rede),
+            },
+            {
+              name: "Endereço de Host",
+              decimal: host,
+              binario: this.calculaBinario(host),
+            },
+            {
+              name: "Máscara",
+              decimal: mask,
+              binario: this.calculaBinario(mask),
+            },
+            {
+              name: "Endereço de Broadcast",
+              decimal: enderecoBroadcast,
+              binario: this.calculaBinario(enderecoBroadcast),
+            },
+            {
+              name: "Classe",
+              decimal: this.calculaClasse(rede),
+              binario: this.calculaBinario(this.calculaClasse(rede)),
+            },
+          ];
+          this.mostrarTabela = true;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
@@ -150,6 +234,35 @@ export default {
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
+          this.desserts = [
+            {
+              name: "Endereço de Rede",
+              decimal: rede,
+              binario: this.calculaBinario(rede),
+            },
+            {
+              name: "Endereço de Host",
+              decimal: host,
+              binario: this.calculaBinario(host),
+            },
+            {
+              name: "Máscara",
+              decimal: mask,
+              binario: this.calculaBinario(mask),
+            },
+            {
+              name: "Endereço de Broadcast",
+              decimal: enderecoBroadcast,
+              binario: this.calculaBinario(enderecoBroadcast),
+            },
+            {
+              name: "Classe",
+              decimal: this.calculaClasse(rede),
+              binario: "---",
+            },
+          ];
+          this.mostrarTabela = true;
+
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
           );
@@ -163,6 +276,34 @@ export default {
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
+          this.desserts = [
+            {
+              name: "Endereço de Rede",
+              decimal: rede,
+              binario: this.calculaBinario(rede),
+            },
+            {
+              name: "Endereço de Host",
+              decimal: host,
+              binario: this.calculaBinario(host),
+            },
+            {
+              name: "Máscara",
+              decimal: mask,
+              binario: this.calculaBinario(mask),
+            },
+            {
+              name: "Endereço de Broadcast",
+              decimal: enderecoBroadcast,
+              binario: this.calculaBinario(enderecoBroadcast),
+            },
+            {
+              name: "Classe",
+              decimal: this.calculaClasse(rede),
+              binario: "---",
+            },
+          ];
+          this.mostrarTabela = true;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
@@ -181,6 +322,34 @@ export default {
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
+          this.desserts = [
+            {
+              name: "Endereço de Rede",
+              decimal: rede,
+              binario: this.calculaBinario(rede),
+            },
+            {
+              name: "Endereço de Host",
+              decimal: host,
+              binario: this.calculaBinario(host),
+            },
+            {
+              name: "Máscara",
+              decimal: mask,
+              binario: this.calculaBinario(mask),
+            },
+            {
+              name: "Endereço de Broadcast",
+              decimal: enderecoBroadcast,
+              binario: this.calculaBinario(enderecoBroadcast),
+            },
+            {
+              name: "Classe",
+              decimal: this.calculaClasse(rede),
+              binario: "---",
+            },
+          ];
+          this.mostrarTabela = true;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
@@ -195,10 +364,39 @@ export default {
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
+          this.desserts = [
+            {
+              name: "Endereço de Rede",
+              decimal: rede,
+              binario: this.calculaBinario(rede),
+            },
+            {
+              name: "Endereço de Host",
+              decimal: host,
+              binario: this.calculaBinario(host),
+            },
+            {
+              name: "Máscara",
+              decimal: mask,
+              binario: this.calculaBinario(mask),
+            },
+            {
+              name: "Endereço de Broadcast",
+              decimal: enderecoBroadcast,
+              binario: this.calculaBinario(enderecoBroadcast),
+            },
+            {
+              name: "Classe",
+              decimal: this.calculaClasse(rede),
+              binario: "---",
+            },
+          ];
+          this.mostrarTabela = true;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
           );
+        } else if (this.validaCIDR(CIDR)) {
         } else {
           console.log("Endereços não compatíveis");
         }
@@ -216,22 +414,56 @@ export default {
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
+          let binario = this.calculaBinario(rede);
+
+          this.desserts = [
+            {
+              name: "Endereço de Rede",
+              decimal: rede,
+              binario: binario,
+            },
+            {
+              name: "Endereço de Host",
+              decimal: host,
+              binario: binario,
+            },
+            {
+              name: "Máscara",
+              decimal: mask,
+              binario: binario,
+            },
+            {
+              name: "Endereço de Broadcast",
+              decimal: enderecoBroadcast,
+              binario: binario,
+            },
+            {
+              name: "Classe",
+              decimal: this.calculaClasse(rede),
+              binario: "---",
+            },
+          ];
+          this.mostrarTabela = true;
 
           console.log(
-            `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
+            `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}, binario ${binario}`
           );
-        } else {
+
+        } 
+        
+        else {
           console.log("Endereços não compatíveis");
         }
       }
       console.log(`Ainda não!`);
     },
-    Limpar(){
+    Limpar() {
       this.endereco_ip_rede = "";
       this.endereco_ip = "";
       this.mascara = "";
       this.modelo_CIDR = "";
       this.endereco_broadcast = "";
+      this.mostrarTabela = false;
     },
     enderecoIpEhValido(enderecoIP) {
       let regex =
@@ -405,7 +637,7 @@ export default {
     },
     calculaClasse(endereco) {
       if (this.enderecoIpEhValido(endereco)) {
-        let endereço_em_binário = calculaBinario(endereco);
+        let endereço_em_binário = this.calculaBinario(endereco);
         let dividir_octetos = endereço_em_binário.split(".");
 
         let primeiro_bit = dividir_octetos[0].slice(0, 1);
@@ -414,6 +646,7 @@ export default {
 
         let classe = "";
         if (primeiro_bit === "0") {
+          
           classe = `Pertence a classe A ${primeiro_bittexto}`;
         } else if (segundo_bit === "10") {
           classe = `Pertence a classe B${segundo_bit}`;
@@ -437,8 +670,8 @@ export default {
 
           binario.push(endereço_binario);
         }
-
-        return binario.join(".");
+        let enderecoBinario = binario.join(".");
+        return enderecoBinario;
       }
       return false;
     },
