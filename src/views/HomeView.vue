@@ -3,7 +3,7 @@
     <v-row>
       <v-col> </v-col>
       <v-col>
-        <h1 class="text-center">Calculadora IPv4</h1>
+        <h1 class="text-center text-h2 pa-10">Calculadora IPv4</h1>
       </v-col>
       <v-col></v-col>
     </v-row>
@@ -39,7 +39,7 @@
         <form>
           <v-text-field
             v-model="mascara"
-            :rules="enderecoIPRules"
+            :rules="mascaraRules"
             class="pe-2"
             placeholder="Ex.: 255.255.255.0"
             label="Máscara:"
@@ -54,6 +54,7 @@
         <form>
           <v-text-field
             v-model="modelo_CIDR"
+            :rules="modelo_CIDRRules"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0/24"
             label="Representação CIDR:"
@@ -76,6 +77,14 @@
       </v-col>
     </v-row>
 
+    <v-row>
+      <v-col>
+        <p class="d-flex justify-center text-red" v-if="exibirMensagem">
+          Endereços inválidos ou não compatíveis !
+        </p>
+      </v-col>
+    </v-row>
+
     <v-row class="d-flex justify-center">
       <v-col> </v-col>
       <v-col align="center" jutify="center">
@@ -94,7 +103,7 @@
 
     <v-row>
       <v-col>
-        <p class="d-flex justify-center">
+        <p class="d-flex justify-center pa-5">
           Para utilizar a calculadora, preencha dois ou mais campos e escolha a
           opção CALCULAR para o preenchimento dos campos vazios.
         </p>
@@ -135,6 +144,7 @@ export default {
       mascara: "",
       modelo_CIDR: "",
       endereco_broadcast: "",
+      exibirMensagem: false,
       desserts: [
         {
           name: "Endereço de Rede",
@@ -166,7 +176,19 @@ export default {
         (value) =>
           /^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(
             value
-          ) || "Endereço inválido",
+          ) || "Endereço inválido!",
+      ],
+      mascaraRules: [
+        (value) => 
+          /^(255|254|252|248|240|224|192|128|0)\.(255|254|252|248|240|224|192|128|0)\.(255|254|252|248|240|224|192|128|0)\.(255|254|252|248|240|224|192|128|0)$/.test(
+            value
+          ) || "Máscara Inválida!"
+      ],
+      modelo_CIDRRules: [
+        (value) => 
+        /^(\d{1,3}\.){3}\d{1,3}\/(3[0-2]|[1-2]?[0-9]|8)$/.test(
+          value
+          ) || "Endereço CIDR inválido!" 
       ],
     };
   },
@@ -213,10 +235,11 @@ export default {
             {
               name: "Classe",
               decimal: this.calculaClasse(rede),
-              binario: this.calculaBinario(this.calculaClasse(rede)),
+              binario: "---",
             },
           ];
           this.mostrarTabela = true;
+          this.exibirMensagem = false;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
@@ -262,6 +285,7 @@ export default {
             },
           ];
           this.mostrarTabela = true;
+          this.exibirMensagem = false;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
@@ -304,12 +328,14 @@ export default {
             },
           ];
           this.mostrarTabela = true;
+          this.exibirMensagem = false;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
           );
-        } else {
-          console.log("Endereço inválido");
+        } 
+        else {
+          this.exibirMensagem = true;
         }
       } else if (this.enderecoIpEhValido(host)) {
         if (this.validaMascara(mask)) {
@@ -350,6 +376,7 @@ export default {
             },
           ];
           this.mostrarTabela = true;
+          this.exibirMensagem = false;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
@@ -392,6 +419,7 @@ export default {
             },
           ];
           this.mostrarTabela = true;
+          this.exibirMensagem = false;
 
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
@@ -448,14 +476,12 @@ export default {
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}, binario ${binario}`
           );
-
-        } 
-        
-        else {
+        } else {
           console.log("Endereços não compatíveis");
         }
+      } else {
+        this.exibirMensagem = true;
       }
-      console.log(`Ainda não!`);
     },
     Limpar() {
       this.endereco_ip_rede = "";
@@ -464,6 +490,7 @@ export default {
       this.modelo_CIDR = "";
       this.endereco_broadcast = "";
       this.mostrarTabela = false;
+      this.exibirMensagem = false;
     },
     enderecoIpEhValido(enderecoIP) {
       let regex =
@@ -646,7 +673,6 @@ export default {
 
         let classe = "";
         if (primeiro_bit === "0") {
-          
           classe = `Pertence a classe A ${primeiro_bittexto}`;
         } else if (segundo_bit === "10") {
           classe = `Pertence a classe B${segundo_bit}`;
