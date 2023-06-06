@@ -3,7 +3,7 @@
     <v-row>
       <v-col> </v-col>
       <v-col>
-        <h1 class="text-center text-h2 pa-10">Calculadora IPv4</h1>
+        <h1 class="text-center pa-10">Calculadora IPv4</h1>
       </v-col>
       <v-col></v-col>
     </v-row>
