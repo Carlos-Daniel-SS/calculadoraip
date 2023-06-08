@@ -14,7 +14,7 @@
         <form>
           <v-text-field
             v-model="endereco_ip_rede"
-            :rules="enderecoIPRules"
+            :rules="endereco_ip_rede.length > 0 ?  enderecoIPRules:[]"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0"
             label="Digite o endereço de rede:"
@@ -26,7 +26,7 @@
         <form>
           <v-text-field
             v-model="endereco_ip"
-            :rules="enderecoIPRules"
+            :rules="endereco_ip.length > 0 ?  enderecoIPRules:[]"
             :disabled="endereco_ip_rede.length != 0"
             class="pe-2"
             placeholder="Ex.: 133.8.0.1"
@@ -39,7 +39,7 @@
         <form>
           <v-text-field
             v-model="mascara"
-            :rules="mascaraRules"
+            :rules="mascara.length > 0 ? mascaraRules: []"
             class="pe-2"
             placeholder="Ex.: 255.255.255.0"
             label="Máscara:"
@@ -54,7 +54,7 @@
         <form>
           <v-text-field
             v-model="modelo_CIDR"
-            :rules="modelo_CIDRRules"
+            :rules="modelo_CIDR.length > 0 ? modelo_CIDRRules: []"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0/24"
             label="Representação CIDR:"
@@ -66,7 +66,7 @@
         <form>
           <v-text-field
             v-model="endereco_broadcast"
-            :rules="enderecoIPRules"
+            :rules="endereco_broadcast > 0 ? enderecoIPRules:[]"
             :disabled="endereco_ip.length != 0"
             class="pe-2"
             placeholder="Ex.: 133.8.0.255"
