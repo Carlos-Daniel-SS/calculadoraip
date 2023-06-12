@@ -5,18 +5,3 @@
     </v-main>
   </v-app>
 </template>
-
-<script>
-
-export default {
-  name: 'App',
-
-  data: () => ({
-    methods: {
-      validar_endereço(){
-        return true;
-      }
-    }
-  }),
-}
-</script>
