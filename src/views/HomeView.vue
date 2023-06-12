@@ -3,9 +3,17 @@
     <v-row>
       <v-col> </v-col>
       <v-col>
-        <h1 class="text-center pa-10">Calculadora IPv4</h1>
+        <h1 class="text-center pa-8">Calculadora IPv4</h1>
       </v-col>
       <v-col></v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <p class="d-flex justify-center pa-5">
+          Para utilizar a calculadora, preencha dois ou mais campos e escolha a
+          opção CALCULAR para o preenchimento dos campos vazios.
+        </p>
+      </v-col>
     </v-row>
     <br />
 
@@ -99,15 +107,6 @@
         >
       </v-col>
       <v-col></v-col>
-    </v-row>
-
-    <v-row>
-      <v-col>
-        <p class="d-flex justify-center pa-5">
-          Para utilizar a calculadora, preencha dois ou mais campos e escolha a
-          opção CALCULAR para o preenchimento dos campos vazios.
-        </p>
-      </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -206,8 +205,8 @@ export default {
           enderecoBroadcast = this.calculaBroadcast(rede, mask);
           CIDR = this.calculaCIDR(rede, mask);
 
-          this.endereco_ip_rede = rede;
           this.endereco_ip = host;
+          this.endereco_ip_rede = rede;
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
