@@ -672,7 +672,7 @@ export default {
 
         let classe = "";
         if (primeiro_bit === "0") {
-          classe = `Pertence a classe A ${primeiro_bittexto}`;
+          classe = `Pertence a classe A ${primeiro_bit}`;
         } else if (segundo_bit === "10") {
           classe = `Pertence a classe B${segundo_bit}`;
         } else if (terceiro_bit === "110") {
