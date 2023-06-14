@@ -1,28 +1,25 @@
 <template>
   <v-container class="spacing-playground pa-6">
     <v-row>
-      <v-col> </v-col>
-      <v-col>
+      <v-col cols="12">
         <h1 class="text-center pa-8">Calculadora IPv4</h1>
       </v-col>
-      <v-col></v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col cols="12">
         <p class="d-flex justify-center pa-5">
-          Para utilizar a calculadora, preencha dois ou mais campos e escolha a
-          opção CALCULAR para o preenchimento dos campos vazios.
+          Para utilizar a calculadora, preencha dois ou mais campos e escolha a opção CALCULAR para o preenchimento dos campos vazios.
         </p>
       </v-col>
     </v-row>
     <br />
 
     <v-row no-gutters>
-      <v-col>
+      <v-col cols="12" sm="4">
         <form>
           <v-text-field
             v-model="endereco_ip_rede"
-            :rules="endereco_ip_rede.length > 0 ?  enderecoIPRules:[]"
+            :rules="endereco_ip_rede.length > 0 ? enderecoIPRules : []"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0"
             label="Digite o endereço de rede:"
@@ -30,11 +27,11 @@
           </v-text-field>
         </form>
       </v-col>
-      <v-col>
+      <v-col cols="12" sm="4">
         <form>
           <v-text-field
             v-model="endereco_ip"
-            :rules="endereco_ip.length > 0 ?  enderecoIPRules:[]"
+            :rules="endereco_ip.length > 0 ? enderecoIPRules : []"
             :disabled="endereco_ip_rede.length != 0"
             class="pe-2"
             placeholder="Ex.: 133.8.0.1"
@@ -43,11 +40,11 @@
           </v-text-field>
         </form>
       </v-col>
-      <v-col>
+      <v-col cols="12" sm="4">
         <form>
           <v-text-field
             v-model="mascara"
-            :rules="mascara.length > 0 ? mascaraRules: []"
+            :rules="mascara.length > 0 ? mascaraRules : []"
             class="pe-2"
             placeholder="Ex.: 255.255.255.0"
             label="Máscara:"
@@ -58,11 +55,11 @@
     </v-row>
 
     <v-row no-gutters>
-      <v-col>
+      <v-col cols="12" sm="6">
         <form>
           <v-text-field
             v-model="modelo_CIDR"
-            :rules="modelo_CIDR.length > 0 ? modelo_CIDRRules: []"
+            :rules="modelo_CIDR.length > 0 ? modelo_CIDRRules : []"
             class="pe-2"
             placeholder="Ex.: 133.8.0.0/24"
             label="Representação CIDR:"
@@ -70,11 +67,11 @@
           </v-text-field>
         </form>
       </v-col>
-      <v-col>
+      <v-col cols="12" sm="6">
         <form>
           <v-text-field
             v-model="endereco_broadcast"
-            :rules="endereco_broadcast > 0 ? enderecoIPRules:[]"
+            :rules="endereco_broadcast.length > 0 ? enderecoIPRules : []"
             :disabled="endereco_ip.length != 0"
             class="pe-2"
             placeholder="Ex.: 133.8.0.255"
@@ -86,7 +83,7 @@
     </v-row>
 
     <v-row>
-      <v-col>
+      <v-col cols="12">
         <p class="d-flex justify-center text-red" v-if="exibirMensagem">
           Endereços inválidos ou não compatíveis !
         </p>
@@ -94,22 +91,16 @@
     </v-row>
 
     <v-row class="d-flex justify-center">
-      <v-col> </v-col>
-      <v-col align="center" jutify="center">
+      <v-col cols="12" sm="6" lg="3">
         <v-btn class="bg-red" width="100%" @click="Limpar()">REINICIAR</v-btn>
       </v-col>
-      <v-col></v-col>
-
-      <v-col> </v-col>
-      <v-col align="center" jutify="center">
-        <v-btn class="bg-green" width="100%" @click="CalculaTodos()"
-          >CALCULAR</v-btn
-        >
+      <v-col cols="12" sm="6" lg="3">
+        <v-btn class="bg-green" width="100%" @click="CalculaTodos()">CALCULAR</v-btn>
       </v-col>
-      <v-col></v-col>
     </v-row>
+
     <v-row>
-      <v-col>
+      <v-col cols="12">
         <v-table v-if="mostrarTabela" height="300px">
           <thead>
             <tr>
@@ -130,6 +121,7 @@
     </v-row>
   </v-container>
 </template>
+
 
 <script>
 export default {
@@ -672,11 +664,11 @@ export default {
 
         let classe = "";
         if (primeiro_bit === "0") {
-          classe = `Pertence a classe A ${primeiro_bit}`;
+          classe = `Pertence a classe A --> ${primeiro_bit}`;
         } else if (segundo_bit === "10") {
-          classe = `Pertence a classe B${segundo_bit}`;
+          classe = `Pertence a classe B --> ${segundo_bit}`;
         } else if (terceiro_bit === "110") {
-          classe = `Pertence a classe C ${terceiro_bit}`;
+          classe = `Pertence a classe C --> ${terceiro_bit}`;
         } else {
           classe = `Classe não identificada`;
         }
