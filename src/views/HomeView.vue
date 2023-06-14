@@ -8,7 +8,8 @@
     <v-row>
       <v-col cols="12">
         <p class="d-flex justify-center pa-5">
-          Para utilizar a calculadora, preencha dois ou mais campos e escolha a opção CALCULAR para o preenchimento dos campos vazios.
+          Para utilizar a calculadora, preencha DOIS e escolha a
+          opção CALCULAR para o preenchimento dos campos vazios.
         </p>
       </v-col>
     </v-row>
@@ -95,7 +96,9 @@
         <v-btn class="bg-red" width="100%" @click="Limpar()">REINICIAR</v-btn>
       </v-col>
       <v-col cols="12" sm="6" lg="3">
-        <v-btn class="bg-green" width="100%" @click="CalculaTodos()">CALCULAR</v-btn>
+        <v-btn class="bg-green" width="100%" @click="CalculaTodos()"
+          >CALCULAR</v-btn
+        >
       </v-col>
     </v-row>
 
@@ -170,16 +173,15 @@ export default {
           ) || "Endereço inválido!",
       ],
       mascaraRules: [
-        (value) => 
+        (value) =>
           /^(255|254|252|248|240|224|192|128|0)\.(255|254|252|248|240|224|192|128|0)\.(255|254|252|248|240|224|192|128|0)\.(255|254|252|248|240|224|192|128|0)$/.test(
             value
-          ) || "Máscara Inválida!"
+          ) || "Máscara Inválida!",
       ],
       modelo_CIDRRules: [
-        (value) => 
-        /^(\d{1,3}\.){3}\d{1,3}\/(3[0-2]|[1-2]?[0-9]|8)$/.test(
-          value
-          ) || "Endereço CIDR inválido!" 
+        (value) =>
+          /^(\d{1,3}\.){3}\d{1,3}\/(3[0-2]|[1-2]?[0-9]|8)$/.test(value) ||
+          "Endereço CIDR inválido!",
       ],
     };
   },
@@ -190,8 +192,9 @@ export default {
       let mask = this.mascara;
       let CIDR = this.modelo_CIDR;
       let enderecoBroadcast = this.endereco_broadcast;
-
+      //Verifica o endereço de rede
       if (this.enderecoIpEhValido(rede)) {
+        //verifica a mascara
         if (this.validaMascara(mask) && this.validaRedeMascara(rede, mask)) {
           rede = this.calculaRede(rede, mask);
           enderecoBroadcast = this.calculaBroadcast(rede, mask);
@@ -202,6 +205,7 @@ export default {
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
+
           this.desserts = [
             {
               name: "Endereço de Rede",
@@ -235,7 +239,9 @@ export default {
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
           );
-        } else if (
+        }
+        //verifica o endereço CIDR
+        else if (
           this.validaCIDR(CIDR) &&
           rede == this.calculaEnderecoComCIDR(CIDR)
         ) {
@@ -281,7 +287,9 @@ export default {
           console.log(
             `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
           );
-        } else if (this.validaBroadcast(rede, enderecoBroadcast)) {
+        }
+        //verifica o endereço de broadcast
+        else if (this.validaBroadcast(rede, enderecoBroadcast)) {
           mask = this.calculaMascaraComBroadcast(rede, enderecoBroadcast);
           console.log(`mascara: ${mask}`);
           CIDR = this.calculaCIDR(rede, mask);
@@ -320,15 +328,13 @@ export default {
           ];
           this.mostrarTabela = true;
           this.exibirMensagem = false;
-
-          console.log(
-            `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
-          );
-        } 
-        else {
+        } else {
           this.exibirMensagem = true;
         }
-      } else if (this.enderecoIpEhValido(host)) {
+      }
+      // verifica endereço de host
+      else if (this.enderecoIpEhValido(host)) {
+        //verifica mascara
         if (this.validaMascara(mask)) {
           rede = this.calculaRede(host, mask);
           CIDR = this.calculaCIDR(host, mask);
@@ -368,20 +374,76 @@ export default {
           ];
           this.mostrarTabela = true;
           this.exibirMensagem = false;
-
-          console.log(
-            `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
-          );
-        } else if (this.validaCIDR(CIDR)) {
+        }
+        //verifica o endereço CIDR
+        else if (this.validaCIDR(CIDR)) {
+          let redecid = this.calculaEnderecoComCIDR(CIDR);
           mask = this.calculaMascaraComCIDR(CIDR);
           rede = this.calculaRede(host, mask);
-          enderecoBroadcast = this.calculaBroadcast(host, mask);
+
+          if (rede == redecid) {
+
+            enderecoBroadcast = this.calculaBroadcast(host, mask);
+
+            this.endereco_ip_rede = rede;
+            this.endereco_ip = host;
+            this.mascara = mask;
+            this.modelo_CIDR = CIDR;
+            this.endereco_broadcast = enderecoBroadcast;
+            this.desserts = [
+              {
+                name: "Endereço de Rede",
+                decimal: rede,
+                binario: this.calculaBinario(rede),
+              },
+              {
+                name: "Endereço de Host",
+                decimal: host,
+                binario: this.calculaBinario(host),
+              },
+              {
+                name: "Máscara",
+                decimal: mask,
+                binario: this.calculaBinario(mask),
+              },
+              {
+                name: "Endereço de Broadcast",
+                decimal: enderecoBroadcast,
+                binario: this.calculaBinario(enderecoBroadcast),
+              },
+              {
+                name: "Classe",
+                decimal: this.calculaClasse(rede),
+                binario: "---",
+              },
+            ];
+            this.mostrarTabela = true;
+            this.exibirMensagem = false;
+          }
+          else {
+            this.exibirMensagem = true;
+          }
+        } 
+        else {
+          this.exibirMensagem = true;
+        }
+
+      } 
+      // verifica a mascara
+      else if (this.validaMascara(mask)) {
+
+        //verifica endereço CIDR e se os campos dos CIDR são válidos
+        if (this.validaCIDR(CIDR) && mask === this.calculaMascaraComCIDR(CIDR) && this.calculaEnderecoComCIDR(CIDR) != false) {
+
+          rede = this.calculaEnderecoComCIDR(CIDR);
+          enderecoBroadcast = this.calculaBroadcastComCIDR(CIDR);
 
           this.endereco_ip_rede = rede;
           this.endereco_ip = host;
           this.mascara = mask;
           this.modelo_CIDR = CIDR;
           this.endereco_broadcast = enderecoBroadcast;
+          
           this.desserts = [
             {
               name: "Endereço de Rede",
@@ -410,67 +472,14 @@ export default {
             },
           ];
           this.mostrarTabela = true;
-          this.exibirMensagem = false;
-
-          console.log(
-            `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
-          );
-        } else if (this.validaCIDR(CIDR)) {
-        } else {
-          console.log("Endereços não compatíveis");
+        } 
+        
+        else {
+          this.exibirMensagem = true;
         }
-      } else if (this.validaMascara(mask)) {
-        if (
-          this.validaCIDR(CIDR) &&
-          mask == this.calculaMascaraComCIDR(CIDR) &&
-          this.calculaEnderecoComCIDR(CIDR) != false
-        ) {
-          rede = this.calculaEnderecoComCIDR(CIDR);
-          enderecoBroadcast = this.calculaBroadcastComCIDR(CIDR);
-
-          this.endereco_ip_rede = rede;
-          this.endereco_ip = host;
-          this.mascara = mask;
-          this.modelo_CIDR = CIDR;
-          this.endereco_broadcast = enderecoBroadcast;
-          let binario = this.calculaBinario(rede);
-
-          this.desserts = [
-            {
-              name: "Endereço de Rede",
-              decimal: rede,
-              binario: binario,
-            },
-            {
-              name: "Endereço de Host",
-              decimal: host,
-              binario: binario,
-            },
-            {
-              name: "Máscara",
-              decimal: mask,
-              binario: binario,
-            },
-            {
-              name: "Endereço de Broadcast",
-              decimal: enderecoBroadcast,
-              binario: binario,
-            },
-            {
-              name: "Classe",
-              decimal: this.calculaClasse(rede),
-              binario: "---",
-            },
-          ];
-          this.mostrarTabela = true;
-
-          console.log(
-            `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}, binario ${binario}`
-          );
-        } else {
-          console.log("Endereços não compatíveis");
-        }
-      } else {
+      } 
+      
+      else {
         this.exibirMensagem = true;
       }
     },
