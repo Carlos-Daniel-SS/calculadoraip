@@ -483,8 +483,6 @@ export default {
       this.mostrarTabela = false;
       this.exibirMensagem = false;
     },
-
-
     enderecoIpEhValido(enderecoIP) {
       let regex =
         /^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
@@ -560,9 +558,9 @@ export default {
       }
       return true;
     },
-
     calculaRede(enderecoIP, mascara) {
       if (this.enderecoIpEhValido(enderecoIP) && this.validaMascara(mascara)) {
+
         let enderecoOctetos = enderecoIP.split(".").map(Number);
         let mascaraOctetos = mascara.split(".").map(Number);
         let redeOctetos = [];
@@ -578,13 +576,16 @@ export default {
     },
     calculaBroadcast(enderecoIP, mascara) {
       if (this.enderecoIpEhValido(enderecoIP) && this.validaMascara(mascara)) {
+
         let endereRede = this.calculaRede(enderecoIP, mascara);
         let enderecoOctetos = endereRede.split(".").map(Number);
         let mascaraOctetos = mascara.split(".").map(Number);
         let broadcastOctetos = [];
 
         for (let i = 0; i < 4; i++) {
+
           broadcastOctetos.push(enderecoOctetos[i] | (255 - mascaraOctetos[i]));
+
         }
 
         let broadcast = broadcastOctetos.join(".");
@@ -597,6 +598,7 @@ export default {
         this.enderecoIpEhValido(enderecoHost) &&
         this.validaMascara(mascaraHost)
       ) {
+        
         let endereco_rede = this.calculaRede(enderecoHost, mascaraHost);
         let mascara_em_binario = this.calculaBinario(mascaraHost).split(".");
 
