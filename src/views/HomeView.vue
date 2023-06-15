@@ -8,7 +8,7 @@
     <v-row>
       <v-col cols="12">
         <p class="d-flex justify-center pa-5">
-          Para utilizar a calculadora, preencha DOIS e escolha a
+          Para utilizar a calculadora, preencha DOIS campos e escolha a
           opção CALCULAR para o preenchimento dos campos vazios.
         </p>
       </v-col>
@@ -192,14 +192,14 @@ export default {
       let mask = this.mascara;
       let CIDR = this.modelo_CIDR;
       let enderecoBroadcast = this.endereco_broadcast;
-      //Verifica o endereço de rede
+      
       if (this.enderecoIpEhValido(rede)) {
-        //verifica a mascara
+        
         if (this.validaMascara(mask) && this.validaRedeMascara(rede, mask)) {
           rede = this.calculaRede(rede, mask);
           enderecoBroadcast = this.calculaBroadcast(rede, mask);
           CIDR = this.calculaCIDR(rede, mask);
-
+          
           this.endereco_ip = host;
           this.endereco_ip_rede = rede;
           this.mascara = mask;
@@ -236,15 +236,9 @@ export default {
           this.mostrarTabela = true;
           this.exibirMensagem = false;
 
-          console.log(
-            `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
-          );
         }
         //verifica o endereço CIDR
-        else if (
-          this.validaCIDR(CIDR) &&
-          rede == this.calculaEnderecoComCIDR(CIDR)
-        ) {
+        else if (this.validaCIDR(CIDR) && rede == this.calculaEnderecoComCIDR(CIDR)) {
           rede = this.calculaEnderecoComCIDR(CIDR);
           mask = this.calculaMascaraComCIDR(CIDR);
           enderecoBroadcast = this.calculaBroadcastComCIDR(CIDR);
@@ -284,9 +278,6 @@ export default {
           this.mostrarTabela = true;
           this.exibirMensagem = false;
 
-          console.log(
-            `saida: rede: ${rede}, host: ${host}, mascara: ${mask}, broadcast: ${enderecoBroadcast}, CIDR: ${CIDR}`
-          );
         }
         //verifica o endereço de broadcast
         else if (this.validaBroadcast(rede, enderecoBroadcast)) {
@@ -328,7 +319,8 @@ export default {
           ];
           this.mostrarTabela = true;
           this.exibirMensagem = false;
-        } else {
+        } 
+        else {
           this.exibirMensagem = true;
         }
       }
@@ -477,8 +469,7 @@ export default {
         else {
           this.exibirMensagem = true;
         }
-      } 
-      
+      }
       else {
         this.exibirMensagem = true;
       }
@@ -492,6 +483,8 @@ export default {
       this.mostrarTabela = false;
       this.exibirMensagem = false;
     },
+
+
     enderecoIpEhValido(enderecoIP) {
       let regex =
         /^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
@@ -538,11 +531,16 @@ export default {
       return true;
     },
     validaBroadcast(rede, broadcast) {
+      
       if (this.enderecoIpEhValido(broadcast)) {
+
         let enderecoOctetos = rede.split(".").map(Number);
         let broadcastOctetos = broadcast.split(".").map(Number);
+
         for (let i = 0; i < enderecoOctetos.length; i++) {
+
           if (enderecoOctetos[i] != broadcastOctetos[i]) {
+
             let numeroChave = broadcastOctetos[i] + 1;
             let loga = Math.log2(numeroChave);
             //console.log(`numero: ${numeroChave}, ${loga}`);
@@ -562,6 +560,7 @@ export default {
       }
       return true;
     },
+
     calculaRede(enderecoIP, mascara) {
       if (this.enderecoIpEhValido(enderecoIP) && this.validaMascara(mascara)) {
         let enderecoOctetos = enderecoIP.split(".").map(Number);
