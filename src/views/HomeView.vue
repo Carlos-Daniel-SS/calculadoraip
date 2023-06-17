@@ -33,7 +33,7 @@
           <v-text-field
             v-model="endereco_ip"
             :rules="endereco_ip.length > 0 ? enderecoIPRules : []"
-            :disabled="endereco_ip_rede.length != 0"
+            
             class="pe-2"
             placeholder="Ex.: 133.8.0.1"
             label="Digite o endereço de host:"
@@ -73,7 +73,7 @@
           <v-text-field
             v-model="endereco_broadcast"
             :rules="endereco_broadcast.length > 0 ? enderecoIPRules : []"
-            :disabled="endereco_ip.length != 0"
+            
             class="pe-2"
             placeholder="Ex.: 133.8.0.255"
             label="Digite o endereço de broadcast:"
@@ -598,7 +598,7 @@ export default {
         this.enderecoIpEhValido(enderecoHost) &&
         this.validaMascara(mascaraHost)
       ) {
-        
+
         let endereco_rede = this.calculaRede(enderecoHost, mascaraHost);
         let mascara_em_binario = this.calculaBinario(mascaraHost).split(".");
 
@@ -640,18 +640,20 @@ export default {
         this.enderecoIpEhValido(enderecoHost) &&
         this.validaBroadcast(enderecoHost, broadcast)
       ) {
+
         let enderecoOctetos = enderecoHost.split(".").map(Number);
         let broadcastOctetos = broadcast.split(".").map(Number);
         let mascaratOctetos = [];
         let quantidade = 0;
-        //console.log(`rede: ${enderecoOctetos}; broadcast: ${broadcastOctetos}, tamanho: ${broadcastOctetos.length}`)
+        
         for (let i = 0; i < broadcastOctetos.length; i++) {
-          //console.log(`sequencia: ${enderecoOctetos[i]}, ${broadcastOctetos[i]}`)
-
+          
           if (enderecoOctetos[i] !== broadcastOctetos[i]) {
-            //console.log(`contador:${broadcastOctetos[i]}, endereço:${enderecoOctetos[i]}`);
+            
             mascaratOctetos.push(255 - broadcastOctetos[i]);
-          } else {
+          } 
+          
+          else {
             mascaratOctetos.push(
               255 - (broadcastOctetos[i] - enderecoOctetos[i])
             );
@@ -665,6 +667,7 @@ export default {
     },
     calculaClasse(endereco) {
       if (this.enderecoIpEhValido(endereco)) {
+        
         let endereço_em_binário = this.calculaBinario(endereco);
         let dividir_octetos = endereço_em_binário.split(".");
 
@@ -674,11 +677,11 @@ export default {
 
         let classe = "";
         if (primeiro_bit === "0") {
-          classe = `Pertence a classe A --> ${primeiro_bit}`;
+          classe = `Pertence a classe A. Bit(s) Inicial(ais) --> ${primeiro_bit}`;
         } else if (segundo_bit === "10") {
-          classe = `Pertence a classe B --> ${segundo_bit}`;
+          classe = `Pertence a classe B. Bit(s) Inicial(ais) --> ${segundo_bit}`;
         } else if (terceiro_bit === "110") {
-          classe = `Pertence a classe C --> ${terceiro_bit}`;
+          classe = `Pertence a classe C. Bit(s) Inicial(ais) --> ${terceiro_bit}`;
         } else {
           classe = `Classe não identificada`;
         }
@@ -700,7 +703,7 @@ export default {
         let enderecoBinario = binario.join(".");
         return enderecoBinario;
       }
-      return false;
+      return "Não é possível calcular";
     },
     calculaBits(prefixo_rede) {
       //console.log(`prefixo: ${prefixo_rede}`)
