@@ -280,43 +280,47 @@ export default {
         //verifica o endereço de broadcast
         else if (this.validaBroadcast(rede, enderecoBroadcast)) {
           mask = this.calculaMascaraComBroadcast(rede, enderecoBroadcast);
-          console.log(`mascara: ${mask}`);
-          CIDR = this.calculaCIDR(rede, mask);
+          if (this.validaMascara(mask) != true) {
+            this.exibirMensagem = true;
+          } else {
+            console.log(`mascara: ${mask}`);
+            CIDR = this.calculaCIDR(rede, mask);
 
-          this.endereco_ip_rede = rede;
-          this.endereco_ip = host;
-          this.mascara = mask;
-          this.modelo_CIDR = CIDR;
-          this.endereco_broadcast = enderecoBroadcast;
-          this.desserts = [
-            {
-              name: "Endereço de Rede",
-              decimal: rede,
-              binario: this.calculaBinario(rede),
-            },
-            {
-              name: "Endereço de Host",
-              decimal: host,
-              binario: this.calculaBinario(host),
-            },
-            {
-              name: "Máscara",
-              decimal: mask,
-              binario: this.calculaBinario(mask),
-            },
-            {
-              name: "Endereço de Broadcast",
-              decimal: enderecoBroadcast,
-              binario: this.calculaBinario(enderecoBroadcast),
-            },
-            {
-              name: "Classe",
-              decimal: this.calculaClasse(rede),
-              binario: "---",
-            },
-          ];
-          this.mostrarTabela = true;
-          this.exibirMensagem = false;
+            this.endereco_ip_rede = rede;
+            this.endereco_ip = host;
+            this.mascara = mask;
+            this.modelo_CIDR = CIDR;
+            this.endereco_broadcast = enderecoBroadcast;
+            this.desserts = [
+              {
+                name: "Endereço de Rede",
+                decimal: rede,
+                binario: this.calculaBinario(rede),
+              },
+              {
+                name: "Endereço de Host",
+                decimal: host,
+                binario: this.calculaBinario(host),
+              },
+              {
+                name: "Máscara",
+                decimal: mask,
+                binario: this.calculaBinario(mask),
+              },
+              {
+                name: "Endereço de Broadcast",
+                decimal: enderecoBroadcast,
+                binario: this.calculaBinario(enderecoBroadcast),
+              },
+              {
+                name: "Classe",
+                decimal: this.calculaClasse(rede),
+                binario: "---",
+              },
+            ];
+            this.mostrarTabela = true;
+            this.exibirMensagem = false;
+          }
         } else {
           this.exibirMensagem = true;
         }
@@ -462,15 +466,11 @@ export default {
         } else {
           this.exibirMensagem = true;
         }
-      } 
-      
-      else if (this.validaCIDR(CIDR)) {
+      } else if (this.validaCIDR(CIDR)) {
         if (this.calculaEnderecoComCIDR(CIDR) == false) {
           this.exibirMensagem = true;
-          console.log("Entrou")
-        } 
-        
-        else {
+          console.log("Entrou");
+        } else {
           rede = this.calculaEnderecoComCIDR(CIDR);
           mask = this.calculaMascaraComCIDR(CIDR);
           enderecoBroadcast = this.calculaBroadcastComCIDR(CIDR);
@@ -511,9 +511,7 @@ export default {
           this.exibirMensagem = false;
           this.mostrarTabela = true;
         }
-      } 
-      
-      else {
+      } else {
         this.exibirMensagem = true;
       }
     },
@@ -577,18 +575,25 @@ export default {
         let broadcastOctetos = broadcast.split(".").map(Number);
 
         for (let i = 0; i < enderecoOctetos.length; i++) {
-          if (enderecoOctetos[i] != broadcastOctetos[i]) {
+          if (enderecoOctetos[i] != 0) {
+            if (broadcastOctetos[i] != enderecoOctetos[i]) return false;
+          } else {
             let numeroChave = broadcastOctetos[i] + 1;
             let loga = Math.log2(numeroChave);
             //console.log(`numero: ${numeroChave}, ${loga}`);
 
-            if (Number.isInteger(loga)) {
-              return true;
+            if (enderecoOctetos[i - 1] != 0) {
+              if (!Number.isInteger(loga)) {
+                return false;
+              }
+            } else {
+              if (broadcastOctetos[i] !== 255) return false;
             }
-            return false;
           }
         }
+        return true;
       }
+      return false;
     },
     validaRedeMascara(rede, mascara) {
       let redeCompara = this.calculaRede(rede, mascara);
