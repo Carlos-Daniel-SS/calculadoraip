@@ -2,7 +2,7 @@
   <v-container class="spacing-playground pa-6">
     <v-row>
       <v-col cols="12">
-        <h1 class="text-center pa-8">Calculadora IPv4</h1>
+        <h1 class="text-center pa-8">IPWebCalc</h1>
       </v-col>
     </v-row>
     <v-row>
