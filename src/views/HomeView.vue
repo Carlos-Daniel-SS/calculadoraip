@@ -24,6 +24,7 @@
             class="pe-2"
             placeholder="Ex.: 133.8.0.0"
             label="Digite o endereço de rede:"
+            @keyup.enter="CalculaTodos()"
           >
           </v-text-field>
         </form>
@@ -36,6 +37,7 @@
             class="pe-2"
             placeholder="Ex.: 133.8.0.1"
             label="Digite o endereço de host:"
+            @keyup.enter="CalculaTodos()"
           >
           </v-text-field>
         </form>
@@ -48,6 +50,7 @@
             class="pe-2"
             placeholder="Ex.: 255.255.255.0"
             label="Máscara:"
+            @keyup.enter="CalculaTodos()"
           >
           </v-text-field>
         </form>
@@ -63,6 +66,7 @@
             class="pe-2"
             placeholder="Ex.: 133.8.0.0/24"
             label="Representação CIDR:"
+            @keyup.enter="CalculaTodos()"
           >
           </v-text-field>
         </form>
@@ -75,6 +79,7 @@
             class="pe-2"
             placeholder="Ex.: 133.8.0.255"
             label="Digite o endereço de broadcast:"
+            @keyup.enter="CalculaTodos()"
           >
           </v-text-field>
         </form>
@@ -94,7 +99,7 @@
         <v-btn class="bg-red" width="100%" @click="Limpar()">REINICIAR</v-btn>
       </v-col>
       <v-col cols="12" sm="6" lg="3">
-        <v-btn class="bg-green" width="100%" @click="CalculaTodos()"
+        <v-btn class="bg-green" width="100%" @click="CalculaTodos()" 
           >CALCULAR</v-btn
         >
       </v-col>
