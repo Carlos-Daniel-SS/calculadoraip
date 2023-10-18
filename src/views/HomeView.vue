@@ -18,40 +18,22 @@
     <v-row no-gutters>
       <v-col cols="12" sm="4">
         <form>
-          <v-text-field
-            v-model="endereco_ip_rede"
-            :rules="endereco_ip_rede.length > 0 ? enderecoIPRules : []"
-            class="pe-2"
-            placeholder="Ex.: 133.8.0.0"
-            label="Digite o endereço de rede:"
-            @keyup.enter="CalculaTodos()"
-          >
+          <v-text-field v-model="endereco_ip_rede" :rules="endereco_ip_rede.length > 0 ? enderecoIPRules : []"
+            class="pe-2" placeholder="Ex.: 133.8.0.0" label="Digite o endereço de rede:" @keyup.enter="CalculaTodos()">
           </v-text-field>
         </form>
       </v-col>
       <v-col cols="12" sm="4">
         <form>
-          <v-text-field
-            v-model="endereco_ip"
-            :rules="endereco_ip.length > 0 ? enderecoIPRules : []"
-            class="pe-2"
-            placeholder="Ex.: 133.8.0.1"
-            label="Digite o endereço de host:"
-            @keyup.enter="CalculaTodos()"
-          >
+          <v-text-field v-model="endereco_ip" :rules="endereco_ip.length > 0 ? enderecoIPRules : []" class="pe-2"
+            placeholder="Ex.: 133.8.0.1" label="Digite o endereço de host:" @keyup.enter="CalculaTodos()">
           </v-text-field>
         </form>
       </v-col>
       <v-col cols="12" sm="4">
         <form>
-          <v-text-field
-            v-model="mascara"
-            :rules="mascara.length > 0 ? mascaraRules : []"
-            class="pe-2"
-            placeholder="Ex.: 255.255.255.0"
-            label="Máscara:"
-            @keyup.enter="CalculaTodos()"
-          >
+          <v-text-field v-model="mascara" :rules="mascara.length > 0 ? mascaraRules : []" class="pe-2"
+            placeholder="Ex.: 255.255.255.0" label="Máscara:" @keyup.enter="CalculaTodos()">
           </v-text-field>
         </form>
       </v-col>
@@ -60,27 +42,16 @@
     <v-row no-gutters>
       <v-col cols="12" sm="6">
         <form>
-          <v-text-field
-            v-model="modelo_CIDR"
-            :rules="modelo_CIDR.length > 0 ? modelo_CIDRRules : []"
-            class="pe-2"
-            placeholder="Ex.: 133.8.0.0/24"
-            label="Representação CIDR:"
-            @keyup.enter="CalculaTodos()"
-          >
+          <v-text-field v-model="modelo_CIDR" :rules="modelo_CIDR.length > 0 ? modelo_CIDRRules : []" class="pe-2"
+            placeholder="Ex.: 133.8.0.0/24" label="Representação CIDR:" @keyup.enter="CalculaTodos()">
           </v-text-field>
         </form>
       </v-col>
       <v-col cols="12" sm="6">
         <form>
-          <v-text-field
-            v-model="endereco_broadcast"
-            :rules="endereco_broadcast.length > 0 ? enderecoIPRules : []"
-            class="pe-2"
-            placeholder="Ex.: 133.8.0.255"
-            label="Digite o endereço de broadcast:"
-            @keyup.enter="CalculaTodos()"
-          >
+          <v-text-field v-model="endereco_broadcast" :rules="endereco_broadcast.length > 0 ? enderecoIPRules : []"
+            class="pe-2" placeholder="Ex.: 133.8.0.255" label="Digite o endereço de broadcast:"
+            @keyup.enter="CalculaTodos()">
           </v-text-field>
         </form>
       </v-col>
@@ -99,9 +70,7 @@
         <v-btn class="bg-red" width="100%" @click="Limpar()">REINICIAR</v-btn>
       </v-col>
       <v-col cols="12" sm="6" lg="3">
-        <v-btn class="bg-green" width="100%" @click="CalculaTodos()" 
-          >CALCULAR</v-btn
-        >
+        <v-btn class="bg-green" width="100%" @click="CalculaTodos()">CALCULAR</v-btn>
       </v-col>
     </v-row>
 
@@ -468,10 +437,52 @@ export default {
             },
           ];
           this.mostrarTabela = true;
-        } else {
+        } 
+        else if (this.enderecoIpEhValido(enderecoBroadcast)){
+          rede = this.CalculaRedeComMascaraEBroadcast(mask, enderecoBroadcast)
+          CIDR = this.calculaCIDR(rede, mask);
+          
+          this.endereco_ip_rede = rede;
+          this.endereco_ip = host;
+          this.mascara = mask;
+          this.modelo_CIDR = CIDR;
+          this.endereco_broadcast = enderecoBroadcast;
+
+          this.desserts = [
+            {
+              name: "Endereço de Rede",
+              decimal: rede,
+              binario: this.calculaBinario(rede),
+            },
+            {
+              name: "Endereço de Host",
+              decimal: host,
+              binario: this.calculaBinario(host),
+            },
+            {
+              name: "Máscara",
+              decimal: mask,
+              binario: this.calculaBinario(mask),
+            },
+            {
+              name: "Endereço de Broadcast",
+              decimal: enderecoBroadcast,
+              binario: this.calculaBinario(enderecoBroadcast),
+            },
+            {
+              name: "Classe",
+              decimal: this.calculaClasse(rede),
+              binario: "---",
+            },
+          ];
+          this.mostrarTabela = true;
+        }
+        else {
           this.exibirMensagem = true;
         }
-      } else if (this.validaCIDR(CIDR)) {
+      } 
+      // verifica o CIDR
+      else if (this.validaCIDR(CIDR)) {
         if (this.calculaEnderecoComCIDR(CIDR) == false) {
           this.exibirMensagem = true;
           console.log("Entrou");
@@ -516,7 +527,9 @@ export default {
           this.exibirMensagem = false;
           this.mostrarTabela = true;
         }
-      } else {
+      } 
+      
+      else {
         this.exibirMensagem = true;
       }
     },
@@ -654,7 +667,7 @@ export default {
       return false;
     },
     calculaEnderecoComCIDR(modeloCIDR) {
-      let [endereçoip, mascara] = modeloCIDR.split("/");
+      let [endereçoip] = modeloCIDR.split("/");
       let mascara_em_Decimal = this.calculaMascaraComCIDR(modeloCIDR);
       let rede = this.calculaRede(endereçoip, mascara_em_Decimal);
       //console.log(`Endereço de Rede:${rede}, mscara:${mascara_em_Decimal}`);
@@ -665,7 +678,7 @@ export default {
     },
     calculaMascaraComCIDR(modeloCIDR) {
       if (this.validaCIDR(modeloCIDR)) {
-        let [endereçoip, mascara] = modeloCIDR.split("/");
+        let [, mascara] = modeloCIDR.split("/");
         let mascara_em_Decimal = this.calculaBits(mascara);
 
         //console.log(`mascara: ${mascara_em_Decimal}`);
@@ -687,7 +700,6 @@ export default {
         let enderecoOctetos = enderecoHost.split(".").map(Number);
         let broadcastOctetos = broadcast.split(".").map(Number);
         let mascaratOctetos = [];
-        let quantidade = 0;
 
         for (let i = 0; i < broadcastOctetos.length; i++) {
           if (enderecoOctetos[i] !== broadcastOctetos[i]) {
@@ -701,6 +713,21 @@ export default {
 
         let mascara = mascaratOctetos.join(".");
         return mascara;
+      }
+      return false;
+    },
+    CalculaRedeComMascaraEBroadcast(mascara, broadcast) {
+      if(this.validaMascara(mascara)){
+        let mascaraOct = mascara.split(".").map(Number);
+        let broadcastOct = broadcast.split(".").map(Number);
+        let redeOctetos = [];
+
+        for (let i = 0; i < 4; i++) {
+          redeOctetos.push(mascaraOct[i] & broadcastOct[i]);
+        }
+
+        let endereço_real = redeOctetos.join(".");
+        return endereço_real;
       }
       return false;
     },
