@@ -437,11 +437,11 @@ export default {
             },
           ];
           this.mostrarTabela = true;
-        } 
-        else if (this.enderecoIpEhValido(enderecoBroadcast)){
+        }
+        else if (this.enderecoIpEhValido(enderecoBroadcast)) {
           rede = this.CalculaRedeComMascaraEBroadcast(mask, enderecoBroadcast)
           CIDR = this.calculaCIDR(rede, mask);
-          
+
           this.endereco_ip_rede = rede;
           this.endereco_ip = host;
           this.mascara = mask;
@@ -480,13 +480,10 @@ export default {
         else {
           this.exibirMensagem = true;
         }
-      } 
+      }
       // verifica o CIDR
       else if (this.validaCIDR(CIDR)) {
-        if (this.calculaEnderecoComCIDR(CIDR) == false) {
-          this.exibirMensagem = true;
-          console.log("Entrou");
-        } else {
+        if (this.calculaEnderecoComCIDR(CIDR) !== false) {
           rede = this.calculaEnderecoComCIDR(CIDR);
           mask = this.calculaMascaraComCIDR(CIDR);
           enderecoBroadcast = this.calculaBroadcastComCIDR(CIDR);
@@ -527,8 +524,53 @@ export default {
           this.exibirMensagem = false;
           this.mostrarTabela = true;
         }
-      } 
-      
+        else if (this.calculaRedeComCIDRcomHost(CIDR) !== false ) {
+          mask = this.calculaMascaraComCIDR(CIDR);
+          rede = this.calculaRedeComCIDRcomHost(CIDR);
+          let [host] = CIDR.split("/")
+          enderecoBroadcast = this.calculaBroadcastComCIDR(CIDR)
+
+          this.endereco_ip_rede = rede;
+          this.endereco_ip = host;
+          this.mascara = mask;
+          this.modelo_CIDR = CIDR;
+          this.endereco_broadcast = enderecoBroadcast
+          console.log(enderecoBroadcast)
+          this.desserts = [
+            {
+              name: "Endereço de Rede",
+              decimal: rede,
+              binario: this.calculaBinario(rede),
+            },
+            {
+              name: "Endereço de Host",
+              decimal: host,
+              binario: this.calculaBinario(host),
+            },
+            {
+              name: "Máscara",
+              decimal: mask,
+              binario: this.calculaBinario(mask),
+            },
+            {
+              name: "Endereço de Broadcast",
+              decimal: enderecoBroadcast,
+              binario: this.calculaBinario(enderecoBroadcast),
+            },
+            {
+              name: "Classe",
+              decimal: this.calculaClasse(rede),
+              binario: "---",
+            },
+          ];
+          this.exibirMensagem = false;
+          this.mostrarTabela = true;
+        }
+        else{
+          this.exibirMensagem = true;
+        }
+      }
+
       else {
         this.exibirMensagem = true;
       }
@@ -717,7 +759,7 @@ export default {
       return false;
     },
     CalculaRedeComMascaraEBroadcast(mascara, broadcast) {
-      if(this.validaMascara(mascara)){
+      if (this.validaMascara(mascara)) {
         let mascaraOct = mascara.split(".").map(Number);
         let broadcastOct = broadcast.split(".").map(Number);
         let redeOctetos = [];
@@ -728,6 +770,15 @@ export default {
 
         let endereço_real = redeOctetos.join(".");
         return endereço_real;
+      }
+      return false;
+    },
+    calculaRedeComCIDRcomHost(modeloCIDR) {
+      if (this.validaCIDR(modeloCIDR)) {
+        let [enderecoip] = modeloCIDR.split("/");
+        let mascara = this.calculaMascaraComCIDR(modeloCIDR);
+        let rede = this.calculaRede(enderecoip, mascara);
+        return rede;
       }
       return false;
     },
