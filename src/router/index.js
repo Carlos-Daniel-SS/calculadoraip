@@ -1,9 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
-import 'vuetify/dist/vuetify.min.css' 
-
-
 const routes = [
   {
     path: '/',
