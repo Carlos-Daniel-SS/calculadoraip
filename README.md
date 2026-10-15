@@ -15,15 +15,20 @@ npm run serve
 npm run build
 ```
 
+### Previews the production build
+```
+npm run preview
+```
+
 ### Run your unit tests
 ```
 npm run test:unit
 ```
 
-### Lints and fixes files
+### Lints files
 ```
 npm run lint
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Vite Configuration Reference](https://vite.dev/config/).
